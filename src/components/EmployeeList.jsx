@@ -2,19 +2,19 @@ import React from "react";
 import { Button, Container, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { deleteStudent } from "../store/crudSlice";
+import { deleteEmployee } from "../store/crudSlice";
 import { toast } from "react-toastify";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 
-const StudentList = () => {
-  const { students } = useSelector((state) => state.students);
+const EmployeeList = () => {
+  const { employees } = useSelector((state) => state.employees);
   const dispatch = useDispatch();
   const handleDelete = (id) => {
-    const isDelete = confirm("Are you sure to delete student?");
+    const isDelete = confirm("Are you sure to delete employee?");
     if (isDelete) {
-      dispatch(deleteStudent(id));
-      toast.success("Student Deleted Successfully!");
+      dispatch(deleteEmployee(id));
+      toast.success("Employee Deleted Successfully!");
     }
   };
 
@@ -26,9 +26,9 @@ const StudentList = () => {
           to={"/add"}
           style={{ textDecoration: "none" }}
         >
-          <Button variant="secondary">Add Student</Button>
+          <Button variant="secondary">Add Employee</Button>
         </Link>
-        <h2 className="heading text-center my-3">Student List</h2>
+        <h2 className="heading text-center my-3">Employee List</h2>
         <Table
           bordered={true}
           striped
@@ -38,13 +38,13 @@ const StudentList = () => {
         >
           <thead>
             <tr className="align-middle">
-              <th>Student Name</th>
+              <th>Employee Name</th>
               <th>Email</th>
               <th>Mobile Number</th>
               {/* <th>Password</th> */}
               <th>Gender</th>
-              <th>Date of Birth</th>
-              <th>Course</th>
+              <th>Date of Joining</th>
+              <th>Designation</th>
               {/* <th>Address</th> */}
               <th>Pincode</th>
               <th>Bank Name</th>
@@ -55,25 +55,25 @@ const StudentList = () => {
             </tr>
           </thead>
           <tbody>
-            {students.length > 0 ? (
-              [...students].reverse().map((student) => {
+            {employees.length > 0 ? (
+              [...employees].reverse().map((employee) => {
                 return (
-                  <tr key={student.id} className="align-middle">
-                    <td>{student.sname}</td>
-                    <td>{student.email}</td>
-                    <td>{student.phone}</td>
-                    {/* <td>{student.password}</td> */}
-                    <td>{student.gender}</td>
-                    <td>{student.dob}</td>
-                    <td>{student.course}</td>
-                    {/* <td>{student.address}</td> */}
-                    <td>{student.pincode}</td>
-                    <td>{student.bname}</td>
-                    <td>{student.bBranch}</td>
-                    <td>{student.account}</td>
-                    <td>{student.ifsc}</td>
+                  <tr key={employee.id} className="align-middle">
+                    <td>{employee.ename}</td>
+                    <td>{employee.email}</td>
+                    <td>{employee.phone}</td>
+                    {/* <td>{employee.password}</td> */}
+                    <td>{employee.gender}</td>
+                    <td>{employee.doj}</td>
+                    <td>{employee.designation}</td>
+                    {/* <td>{employee.address}</td> */}
+                    <td>{employee.pincode}</td>
+                    <td>{employee.bname}</td>
+                    <td>{employee.bBranch}</td>
+                    <td>{employee.account}</td>
+                    <td>{employee.ifsc}</td>
                     <td className="d-flex gap-2">
-                      <Link to={`/update/${student.id}`}>
+                      <Link to={`/update/${employee.id}`}>
                         <Button variant="warning">
                           <FaEdit />
                         </Button>
@@ -81,7 +81,7 @@ const StudentList = () => {
 
                       <Button
                         variant="danger"
-                        onClick={() => handleDelete(student.id)}
+                        onClick={() => handleDelete(employee.id)}
                       >
                         <RiDeleteBin5Fill />
                       </Button>
@@ -91,7 +91,7 @@ const StudentList = () => {
               })
             ) : (
               <tr>
-                <td colSpan={14}>No Students found!</td>
+                <td colSpan={14}>No Employee found!</td>
               </tr>
             )}
           </tbody>
@@ -101,4 +101,4 @@ const StudentList = () => {
   );
 };
 
-export default StudentList;
+export default EmployeeList;

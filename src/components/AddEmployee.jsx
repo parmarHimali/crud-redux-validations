@@ -2,22 +2,22 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { addStudent } from "../store/crudSlice";
+import { addEmployee } from "../store/crudSlice";
 import { Button, Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
-const AddStudent = () => {
-  const { students } = useSelector((state) => state.students);
+const AddEmployee = () => {
+  const { employees } = useSelector((state) => state.employees);
   const dispatch = useDispatch();
   const navigateTo = useNavigate();
   const initialValues = {
-    sname: "",
+    ename: "",
     email: "",
     phone: "",
     password: "",
     gender: "",
-    course: "",
-    dob: "",
+    designation: "",
+    doj: "",
     address: "",
     pincode: "",
 
@@ -28,19 +28,19 @@ const AddStudent = () => {
   };
   const validations = (values) => {
     const errors = {};
-    if (values.sname === "") {
-      errors.sname = "Student name is required.";
-    } else if (values.sname.length < 3) {
-      errors.sname = "Name must contain atleast 3 characters";
-    } else if (!/^[A-Za-z ]+$/.test(values.sname)) {
-      errors.sname = "Name can only contain alphabets.";
+    if (values.ename === "") {
+      errors.ename = "Employee name is required.";
+    } else if (values.ename.length < 3) {
+      errors.ename = "Name must contain atleast 3 characters";
+    } else if (!/^[A-Za-z ]+$/.test(values.ename)) {
+      errors.ename = "Name can only contain alphabets.";
     }
 
     if (values.phone == "") {
       errors.phone = "Mobile number is required";
     } else if (!/^[0-9]{10}$/.test(values.phone)) {
       errors.phone = "Mobile number must be of 10 digits.";
-    } else if (students.some((stud) => stud.phone == values.phone)) {
+    } else if (employees.some((emp) => emp.phone == values.phone)) {
       errors.phone = "Mobile number already exists!";
     }
 
@@ -48,7 +48,7 @@ const AddStudent = () => {
       errors.email = "Email is required.";
     } else if (!/^[A-z0-9_.]+@[A-z0-9_.]+\.[A-Za-z]{2,4}$/.test(values.email)) {
       errors.email = "Invalid email format";
-    } else if (students.some((stud) => stud.email == values.email)) {
+    } else if (employees.some((emp) => emp.email == values.email)) {
       errors.email = "Email already exists!";
     }
 
@@ -64,12 +64,12 @@ const AddStudent = () => {
       errors.gender = "Please select gender.";
     }
 
-    if (values.course == "") {
-      errors.course = "Please select course";
+    if (values.designation == "") {
+      errors.designation = "Please select designation";
     }
 
     if (values.address == "") {
-      errors.address = "Please provide student address";
+      errors.address = "Please provide employee address";
     } else if (values.address.length < 10) {
       errors.address = "Address must contain atleast 10 characters";
     }
@@ -80,10 +80,10 @@ const AddStudent = () => {
       errors.pincode = "Pincode is not valid";
     }
 
-    if (values.dob == "") {
-      errors.dob = "Please select Date of Birth";
-    } else if (values.dob > new Date().toISOString().split("T")[0]) {
-      errors.dob = "Birth date cannot be in future";
+    if (values.doj == "") {
+      errors.doj = "Please select Date of Joining ";
+    } else if (values.doj > new Date().toISOString().split("T")[0]) {
+      errors.doj = "Birth date cannot be in future";
     }
 
     if (values.bname == "") {
@@ -121,7 +121,7 @@ const AddStudent = () => {
           className="text-dark p-4 rounded shadow"
           style={{ backgroundColor: "whitesmoke" }}
         >
-          <h2 className="heading text-center mb-3">Student Information</h2>
+          <h2 className="heading text-center mb-3">Employee Information</h2>
           <Formik
             initialValues={initialValues}
             validate={(values) => {
@@ -129,8 +129,8 @@ const AddStudent = () => {
               return errors;
             }}
             onSubmit={(values, { resetForm }) => {
-              dispatch(addStudent({ ...values, id: Date.now() }));
-              toast.success("Student added successfully!");
+              dispatch(addEmployee({ ...values, id: Date.now() }));
+              toast.success("Employee added successfully!");
               resetForm();
               navigateTo("/");
             }}
@@ -138,16 +138,16 @@ const AddStudent = () => {
             <Form noValidate={true}>
               <div className="row">
                 <div className="form-group mb-2 col-lg-4 col-sm-6 col-12">
-                  <label htmlFor="sname">Student Name: </label>
+                  <label htmlFor="ename">Employee Name: </label>
                   <Field
                     type="text"
-                    name="sname"
-                    id="sname"
+                    name="ename"
+                    id="ename"
                     className="form-control form-control-sm mt-1"
                   />
                   <ErrorMessage
                     className="form-text text-danger"
-                    name="sname"
+                    name="ename"
                     component={"div"}
                   />
                 </div>
@@ -166,7 +166,7 @@ const AddStudent = () => {
                   />
                 </div>
                 <div className="form-group mb-2 col-lg-4 col-sm-12">
-                  <label htmlFor="email">Student Email: </label>
+                  <label htmlFor="email">Employee Email: </label>
                   <Field
                     type="text"
                     name="email"
@@ -234,39 +234,44 @@ const AddStudent = () => {
 
               <div className="row">
                 <div className="form-group mb-3 col-md-6 col-12">
-                  <label htmlFor="course">Course:</label>
+                  <label htmlFor="designation">Designation:</label>
                   <Field
                     as="select"
-                    name="course"
+                    name="designation"
                     className="form-control form-control-sm mt-1"
                   >
-                    <option value="">select course</option>
-                    <option value="BCA">BCA</option>
-                    <option value="BCOM">BCOM</option>
-                    <option value="BA">BA</option>
-                    <option value="MCOM">MCOM</option>
-                    <option value="MCA">MCA</option>
-                    <option value="MscIT">MscIT</option>
+                    <option value="">Select Designation</option>
+                    <option value="Frontend Developer">
+                      Frontend Developer
+                    </option>
+                    <option value="Backend Developer">Backend Developer</option>
+                    <option value="Laravel Developer">Laravel Developer</option>
+                    <option value="Fullstack Developer">
+                      Fullstack Developer
+                    </option>
+                    <option value="MERN stack Developer">
+                      MERN stack Developer
+                    </option>
                   </Field>
                   <ErrorMessage
-                    name="course"
-                    id="course"
+                    name="designation"
+                    id="designation"
                     className="form-text text-danger"
                     component={"div"}
                   />
                 </div>
                 <div className="form-group mb-2 col-md-6 col-12">
-                  <label htmlFor="dob">Date of Birth: </label>
+                  <label htmlFor="doj">Date of Joining: </label>
                   <Field
                     type="date"
-                    name="dob"
-                    id="dob"
+                    name="doj"
+                    id="doj"
                     className="form-control form-control-sm mt-1"
                     max={new Date().toISOString().split("T")[0]}
                   />
                   <ErrorMessage
                     className="form-text text-danger"
-                    name="dob"
+                    name="doj"
                     component="div"
                   />
                 </div>
@@ -365,7 +370,7 @@ const AddStudent = () => {
               <hr />
               <div className="d-flex gap-2 justify-content-end">
                 <Button type="submit" className="mt-2">
-                  Add Student
+                  Add Employee
                 </Button>
                 <Link to="/">
                   <Button type="button" variant="secondary" className="mt-2">
@@ -381,4 +386,4 @@ const AddStudent = () => {
   );
 };
 
-export default AddStudent;
+export default AddEmployee;

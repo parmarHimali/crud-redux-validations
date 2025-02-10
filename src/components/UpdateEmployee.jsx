@@ -3,22 +3,46 @@ import React, { useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getSelectedStudent, updateStudent } from "../store/crudSlice";
+import {
+  getSelectedEmployee,
+  removeSelectedEmployee,
+  updateEmployee,
+} from "../store/crudSlice";
 import { toast } from "react-toastify";
-const UpdateStudent = () => {
-  const { students } = useSelector((state) => state.students);
-  const { sid } = useParams();
-  const { selected } = useSelector((state) => state.students);
+const UpdateEmployee = () => {
+  const { employees } = useSelector((state) => state.employees);
+  const { eid } = useParams();
+  const { selected } = useSelector((state) => state.employees);
   const dispatch = useDispatch();
   const navigateTo = useNavigate();
+  useEffect(() => {
+    const fetchEmployee = async () => {
+      dispatch(getSelectedEmployee(eid));
+    };
+    fetchEmployee();
+    return () => {
+      dispatch(removeSelectedEmployee());
+    };
+  }, [eid]);
+  if (selected === undefined) {
+    return (
+      <h1 className="heading text-center mt-5 text-muted">
+        Invalid Employee ID
+      </h1>
+    );
+  }
+  if (Object.keys(selected).length == 0) {
+    return <h1 className="heading text-center mt-5 text-muted">Loading...</h1>;
+  }
+
   const initialValues = {
-    sname: selected.sname,
+    ename: selected.ename,
     email: selected.email,
     phone: selected.phone,
     password: selected.password,
     gender: selected.gender,
-    course: selected.course,
-    dob: selected.dob,
+    designation: selected.designation,
+    doj: selected.doj,
     address: selected.address,
     pincode: selected.pincode,
     bname: selected.bname,
@@ -27,33 +51,16 @@ const UpdateStudent = () => {
     account: selected.account,
   };
 
-  useEffect(() => {
-    const fetchStudent = async () => {
-      dispatch(getSelectedStudent(sid));
-    };
-    fetchStudent();
-  }, [sid]);
-
   console.log(selected);
-  if (selected == undefined) {
-    return (
-      <h1 className="heading text-center mt-5 text-muted">
-        Invalid Student ID
-      </h1>
-    );
-  }
-  if (Object.keys(selected).length == 0) {
-    return <h1>Loading...</h1>;
-  }
 
   const validations = (values) => {
     const errors = {};
-    if (values.sname === "") {
-      errors.sname = "Student name is required.";
-    } else if (values.sname.length < 3) {
-      errors.sname = "Name must contain atleast 3 characters";
-    } else if (!/^[A-Za-z ]+$/.test(values.sname)) {
-      errors.sname = "Name can only contain alphabets.";
+    if (values.ename === "") {
+      errors.ename = "Employee name is required.";
+    } else if (values.ename.length < 3) {
+      errors.ename = "Name must contain atleast 3 characters";
+    } else if (!/^[A-Za-z ]+$/.test(values.ename)) {
+      errors.ename = "Name can only contain alphabets.";
     }
 
     if (values.phone == "") {
@@ -61,7 +68,7 @@ const UpdateStudent = () => {
     } else if (!/^[0-9]{10}$/.test(values.phone)) {
       errors.phone = "Mobile number must be of 10 digits.";
     } else if (
-      students.some((stud) => stud.id != sid && stud.phone == values.phone)
+      employees.some((emp) => emp.id != eid && emp.phone == values.phone)
     ) {
       errors.phone = "Mobile number already exists!";
     }
@@ -71,7 +78,7 @@ const UpdateStudent = () => {
     } else if (!/^[A-z0-9_.]+@[A-z0-9_.]+\.[A-Za-z]{2,4}$/.test(values.email)) {
       errors.email = "Invalid email format";
     } else if (
-      students.some((stud) => stud.id != sid && stud.email == values.email)
+      employees.some((emp) => emp.id != eid && emp.email == values.email)
     ) {
       errors.email = "Email already exists!";
     }
@@ -88,12 +95,12 @@ const UpdateStudent = () => {
       errors.gender = "Please select gender.";
     }
 
-    if (values.course == "") {
-      errors.course = "Please select course";
+    if (values.designation == "") {
+      errors.designation = "Please select designation";
     }
 
     if (values.address == "") {
-      errors.address = "Please provide student address";
+      errors.address = "Please provide employee address";
     } else if (values.address.length < 10) {
       errors.address = "Address must contain atleast 10 characters";
     }
@@ -104,10 +111,10 @@ const UpdateStudent = () => {
       errors.pincode = "Pincode is not valid";
     }
 
-    if (values.dob == "") {
-      errors.dob = "Please select Date of Birth";
-    } else if (values.dob > new Date().toISOString().split("T")[0]) {
-      errors.dob = "Birth date cannot be in future";
+    if (values.doj == "") {
+      errors.doj = "Please select Date of joining";
+    } else if (values.doj > new Date().toISOString().split("T")[0]) {
+      errors.doj = "joining date cannot be in future";
     }
 
     if (values.bname == "") {
@@ -146,7 +153,7 @@ const UpdateStudent = () => {
           style={{ backgroundColor: "whitesmoke" }}
         >
           <h2 className="heading text-center mb-3">
-            Update Student Information
+            Update Employee Information
           </h2>
           <Formik
             initialValues={initialValues}
@@ -155,8 +162,8 @@ const UpdateStudent = () => {
               return errors;
             }}
             onSubmit={(values, { resetForm }) => {
-              dispatch(updateStudent({ ...values, id: sid }));
-              toast.success("Student Updated successfully!");
+              dispatch(updateEmployee({ ...values, id: eid }));
+              toast.success("Employee Updated successfully!");
               resetForm();
               navigateTo("/");
             }}
@@ -166,16 +173,16 @@ const UpdateStudent = () => {
                 <Form noValidate={true}>
                   <div className="row">
                     <div className="form-group mb-2 col-lg-4 col-sm-6 col-12">
-                      <label htmlFor="sname">Student Name: </label>
+                      <label htmlFor="ename">Employee Name: </label>
                       <Field
                         type="text"
-                        name="sname"
-                        id="sname"
+                        name="ename"
+                        id="ename"
                         className="form-control form-control-sm mt-1"
                       />
                       <ErrorMessage
                         className="form-text text-danger"
-                        name="sname"
+                        name="ename"
                         component={"div"}
                       />
                     </div>
@@ -194,7 +201,7 @@ const UpdateStudent = () => {
                       />
                     </div>
                     <div className="form-group mb-2 col-lg-4 col-sm-12">
-                      <label htmlFor="email">Student Email: </label>
+                      <label htmlFor="email">Employee Email: </label>
                       <Field
                         type="text"
                         name="email"
@@ -262,39 +269,48 @@ const UpdateStudent = () => {
 
                   <div className="row">
                     <div className="form-group mb-2 col-md-6 col-12">
-                      <label htmlFor="course">Course:</label>
+                      <label htmlFor="designation">Designation:</label>
                       <Field
                         as="select"
-                        name="course"
+                        name="designation"
                         className="form-control form-control-sm mt-1"
                       >
-                        <option value="">select course</option>
-                        <option value="BCA">BCA</option>
-                        <option value="BCOM">BCOM</option>
-                        <option value="BA">BA</option>
-                        <option value="MCOM">MCOM</option>
-                        <option value="MCA">MCA</option>
-                        <option value="MscIT">MscIT</option>
+                        <option value="">Select Designation</option>
+                        <option value="Frontend Developer">
+                          Frontend Developer
+                        </option>
+                        <option value="Backend Developer">
+                          Backend Developer
+                        </option>
+                        <option value="Laravel Developer">
+                          Laravel Developer
+                        </option>
+                        <option value="Fullstack Developer">
+                          Fullstack Developer
+                        </option>
+                        <option value="MERN stack Developer">
+                          MERN stack Developer
+                        </option>
                       </Field>
                       <ErrorMessage
-                        name="course"
-                        id="course"
+                        name="designation"
+                        id="designation"
                         className="form-text text-danger"
                         component={"div"}
                       />
                     </div>
                     <div className="form-group mb-2 col-md-6 col-12">
-                      <label htmlFor="dob">Date of Birth: </label>
+                      <label htmlFor="doj">Date of joining: </label>
                       <Field
                         type="date"
-                        name="dob"
-                        id="dob"
+                        name="doj"
+                        id="doj"
                         className="form-control form-control-sm mt-1"
                         max={new Date().toISOString().split("T")[0]}
                       />
                       <ErrorMessage
                         className="form-text text-danger"
-                        name="dob"
+                        name="doj"
                         component="div"
                       />
                     </div>
@@ -394,7 +410,7 @@ const UpdateStudent = () => {
                   <hr />
                   <div className="d-flex gap-2 justify-content-end">
                     <Button type="submit" variant="warning" className="mt-2">
-                      Update Student
+                      Update Employee
                     </Button>
                     <Link to={"/"}>
                       <Button
@@ -416,4 +432,4 @@ const UpdateStudent = () => {
   );
 };
 
-export default UpdateStudent;
+export default UpdateEmployee;

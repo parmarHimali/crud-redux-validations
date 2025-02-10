@@ -2,25 +2,25 @@ import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import AddStudent from "./components/AddStudent";
-import StudentList from "./components/StudentList";
 import { Route, Routes } from "react-router-dom";
-import UpdateStudent from "./components/UpdateStudent";
 import NotFound from "./components/NotFound";
+import AddEmployee from "./components/AddEmployee";
+import EmployeeList from "./components/EmployeeList";
+import UpdateEmployee from "./components/UpdateEmployee";
 
 const App = () => {
-  const { students } = useSelector((state) => state.students);
+  const { employees } = useSelector((state) => state.employees);
 
   useEffect(() => {
-    localStorage.setItem("students", JSON.stringify(students));
-  }, [students]);
+    localStorage.setItem("employees-v2", JSON.stringify(employees));
+  }, [employees]);
 
   return (
     <>
       <Routes>
-        <Route path="/" Component={StudentList} />
-        <Route path="/add" Component={AddStudent} />
-        <Route path="/update/:sid" Component={UpdateStudent} />
+        <Route path="/" Component={EmployeeList} />
+        <Route path="/add" Component={AddEmployee} />
+        <Route path="/update/:eid" Component={UpdateEmployee} />
         <Route path="*" Component={NotFound} />
       </Routes>
       <ToastContainer position="top-center" autoClose={2000} />
