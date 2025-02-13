@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -8,26 +8,52 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 
 const EmployeeList = () => {
+  const [search, setSearch] = useState("");
   const { employees } = useSelector((state) => state.employees);
+  const [filteredEmployees, setFilteredEmployees] = useState(employees);
   const dispatch = useDispatch();
   const handleDelete = (id) => {
     const isDelete = confirm("Are you sure to delete employee?");
     if (isDelete) {
-      dispatch(deleteEmployee(id));
       toast.success("Employee Deleted Successfully!");
+      dispatch(deleteEmployee(id));
     }
   };
+  useEffect(() => {
+    setFilteredEmployees(employees);
+  }, [employees]);
 
+  const handleSearch = (e) => {
+    const sQuery = e.target.value;
+    console.log(sQuery);
+
+    setSearch(sQuery);
+    const filteredEmployees = employees.filter((employee) => {
+      if (employee.ename.toLowerCase().includes(sQuery.toLowerCase())) {
+        return employee;
+      }
+    });
+    setFilteredEmployees(filteredEmployees);
+  };
   return (
     <>
       <Container className="main-container">
-        <Link
-          className="d-flex w-100 justify-content-end"
-          to={"/add"}
-          style={{ textDecoration: "none" }}
-        >
-          <Button variant="secondary">Add Employee</Button>
-        </Link>
+        <div className="d-flex justify-content-between">
+          <input
+            type="text"
+            className="form-control w-25"
+            placeholder="Search employee"
+            onChange={handleSearch}
+            value={search}
+          />
+          <Link
+            className="d-flex w-100 justify-content-end"
+            to={"/add"}
+            style={{ textDecoration: "none" }}
+          >
+            <Button variant="secondary">Add Employee</Button>
+          </Link>
+        </div>
         <h2 className="heading text-center my-3">Employee List</h2>
         <Table
           bordered={true}
@@ -55,8 +81,8 @@ const EmployeeList = () => {
             </tr>
           </thead>
           <tbody>
-            {employees.length > 0 ? (
-              [...employees].reverse().map((employee) => {
+            {filteredEmployees.length > 0 ? (
+              [...filteredEmployees].reverse().map((employee) => {
                 return (
                   <tr key={employee.id} className="align-middle">
                     <td>{employee.ename}</td>
@@ -72,19 +98,21 @@ const EmployeeList = () => {
                     <td>{employee.bBranch}</td>
                     <td>{employee.account}</td>
                     <td>{employee.ifsc}</td>
-                    <td className="d-flex gap-2">
-                      <Link to={`/update/${employee.id}`}>
-                        <Button variant="warning">
-                          <FaEdit />
-                        </Button>
-                      </Link>
+                    <td>
+                      <div className="d-flex gap-2">
+                        <Link to={`/update/${employee.id}`}>
+                          <Button variant="warning">
+                            <FaEdit />
+                          </Button>
+                        </Link>
 
-                      <Button
-                        variant="danger"
-                        onClick={() => handleDelete(employee.id)}
-                      >
-                        <RiDeleteBin5Fill />
-                      </Button>
+                        <Button
+                          variant="danger"
+                          onClick={() => handleDelete(employee.id)}
+                        >
+                          <RiDeleteBin5Fill />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 );
