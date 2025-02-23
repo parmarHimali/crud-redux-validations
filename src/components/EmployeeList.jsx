@@ -47,7 +47,7 @@ const EmployeeList = () => {
             value={search}
           />
           <Link
-            className="d-flex w-100 justify-content-end"
+            className="d-flex justify-content-end"
             to={"/add"}
             style={{ textDecoration: "none" }}
           >
@@ -67,11 +67,11 @@ const EmployeeList = () => {
               <th>Employee Name</th>
               <th>Email</th>
               <th>Mobile Number</th>
-              {/* <th>Password</th> */}
+              <th>Password</th>
               <th>Gender</th>
               <th>Date of Joining</th>
               <th>Designation</th>
-              {/* <th>Address</th> */}
+              <th>Address</th>
               <th>Pincode</th>
               <th>Bank Name</th>
               <th>Branch Name</th>
@@ -88,11 +88,11 @@ const EmployeeList = () => {
                     <td>{employee.ename}</td>
                     <td>{employee.email}</td>
                     <td>{employee.phone}</td>
-                    {/* <td>{employee.password}</td> */}
+                    <td>{employee.password}</td>
                     <td>{employee.gender}</td>
                     <td>{employee.doj}</td>
                     <td>{employee.designation}</td>
-                    {/* <td>{employee.address}</td> */}
+                    <td>{employee.address}</td>
                     <td>{employee.pincode}</td>
                     <td>{employee.bname}</td>
                     <td>{employee.bBranch}</td>

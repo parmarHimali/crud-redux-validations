@@ -22,3 +22,16 @@ button svg {
 table tbody tr td {
   padding: 4px 7px !important;
 }
+
+table {
+  overflow-x: auto;
+}
+
+td {
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  padding: 3px;
+  font-size: 15px;
+}
